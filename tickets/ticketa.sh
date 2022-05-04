@@ -66,7 +66,6 @@ open_in_pycharm() {
   echo -e "\tOpening in Pycharm..."
   cd "${TICKET_FP}"
   BAMF_DESKTOP_FILE_HINT=/var/lib/snapd/desktop/applications/pycharm-professional_pycharm-professional.desktop /snap/bin/pycharm-professional . >/dev/null 2>&1 &
-  $SHELL
 }
 
 open_in_vscode() {
@@ -80,3 +79,5 @@ elif [[ "${1}" == "url" ]]; then
 elif [[ "${1}" == "readme" ]]; then
   get_all_readme_files
 fi
+
+$SHELL

@@ -1,0 +1,5 @@
+#!/bin/bash
+toilet "Rebooting to Windows 10..." --gay -t -f bigmono9
+WINDOWS_ENTRY="$(grep menuentry /boot/grub/grub.cfg  | grep --line-number Windows | cut -d "'" -f2)"
+sudo grub-reboot "$WINDOWS_ENTRY"
+sudo reboot now

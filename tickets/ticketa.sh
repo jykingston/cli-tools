@@ -15,7 +15,7 @@ set -o pipefail
 # Turn on traces, useful while debugging but commented out by default
 # set -o xtrace
 
-TICKET_NUMBER="$1"
+TICKET_NUMBER=""
 TICKET_DIRECTORY="${HOME}/support/tickets"
 
 pprint() {
@@ -86,11 +86,11 @@ open_in_vscode() {
   code .
 }
 
-if [[ -z "$1" ]]; then
+if [[ -z "${1:-}" ]]; then
   existing_ticket_menu
-elif [[ "${1}" == "url" ]]; then
+elif [[ "${1:-}" == "url" ]]; then
   current_ticket_urls
-elif [[ "${1}" == "readme" ]]; then
+elif [[ "${1:-}" == "readme" ]]; then
   get_all_readme_files
 fi
 

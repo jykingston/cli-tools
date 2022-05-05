@@ -13,7 +13,7 @@ set -o errtrace
 # Catch the error in case mysqldump fails (but gzip succeeds) in `mysqldump |gzip`
 set -o pipefail
 # Turn on traces, useful while debugging but commented out by default
-#set -o xtrace
+set -o xtrace
 
 TICKET_NUMBER="$1"
 TICKET_DIRECTORY="${HOME}/support/tickets"
@@ -51,15 +51,12 @@ current_ticket_urls() {
 
 # List all README.md files in the TICKET_DIRECTORY for each TICKET_NUMBER
 get_all_readme_files() {
-  for FILE in "${TICKET_DIRECTORY}"/*/README.md; do
-    if [ -f "${FILE}" ]; then
-      README_FILE=$(fzf --border --preview="mdless ${FILE}" --preview-window=down:50% --inline-info --tac)
-      TICKET_NUMBER=$(sed 's/[^1-5]//g' "${README_FILE}")
-      test ! -z "${TICKET_NUMBER}" || exit 1
-      pprint "Ticket: ${TICKET_NUMBER}"
-      cd "${TICKET_FP}" && open_in_pycharm && open_in_chrome
-    fi
-  done
+  README_FILE=$(ls -d "${TICKET_DIRECTORY}"/*/README.md | fzf --border --preview="mdless {+}" --preview-window=down:50% --inline-info --tac)
+  TICKET_DIRECTORY="$(dirname "${README_FILE}")"
+  TICKET_NUMBER="${TICKET_DIRECTORY##*/}"
+  test ! -z "${TICKET_NUMBER}" || exit 1
+  pprint "Ticket: ${TICKET_NUMBER}"
+  cd "${TICKET_DIRECTORY}" && open_in_pycharm && open_in_chrome
 }
 
 existing_ticket_menu() {
@@ -73,13 +70,11 @@ existing_ticket_menu() {
 
 open_in_chrome() {
   echo -e "\tOpening in Chrome..."
-  cd "${TICKET_FP}"
   google-chrome "https://hashicorp.zendesk.com/agent/tickets/${TICKET_NUMBER}" >/dev/null 2>&1 &
 }
 
 open_in_pycharm() {
   echo -e "\tOpening in Pycharm..."
-  cd "${TICKET_FP}"
   BAMF_DESKTOP_FILE_HINT=/var/lib/snapd/desktop/applications/pycharm-professional_pycharm-professional.desktop /snap/bin/pycharm-professional . >/dev/null 2>&1 &
 }
 

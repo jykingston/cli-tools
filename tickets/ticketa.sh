@@ -9,13 +9,13 @@ set -o errexit
 # Exit on error inside any functions or subshells.
 set -o errtrace
 # Do not allow use of undefined vars. Use ${VAR:-} to use an undefined VAR
-set -o nounset
+#set -o nounset
 # Catch the error in case mysqldump fails (but gzip succeeds) in `mysqldump |gzip`
 set -o pipefail
 # Turn on traces, useful while debugging but commented out by default
 # set -o xtrace
 
-TICKET_NUMBER=""
+TICKET_NUMBER="$1"
 TICKET_DIRECTORY="${HOME}/support/tickets"
 
 pprint() {
@@ -86,11 +86,11 @@ open_in_vscode() {
   code .
 }
 
-if [[ -z "${1:-}" ]]; then
+if [[ -z "${1}" ]]; then
   existing_ticket_menu
-elif [[ "${1:-}" == "url" ]]; then
+elif [[ "${1}" == "url" ]]; then
   current_ticket_urls
-elif [[ "${1:-}" == "readme" ]]; then
+elif [[ "${1}" == "readme" ]]; then
   get_all_readme_files
 fi
 

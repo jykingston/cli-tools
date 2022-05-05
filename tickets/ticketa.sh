@@ -13,7 +13,7 @@ set -o errtrace
 # Catch the error in case mysqldump fails (but gzip succeeds) in `mysqldump |gzip`
 set -o pipefail
 # Turn on traces, useful while debugging but commented out by default
-# set -o xtrace
+#set -o xtrace
 
 TICKET_NUMBER="$1"
 TICKET_DIRECTORY="${HOME}/support/tickets"
@@ -40,8 +40,9 @@ populate_templates() {
 
 # check the local google-chrome session files for any zendesk URLS
 current_ticket_urls() {
-  CURRENT_SESSION=$(ls -d "${HOME}"/.config/google-chrome/Default/Sessions/Tabs* | head -1)
-  TICKET_NUMBER=$(strings "${CURRENT_SESSION}" | grep -E '^https?://hashicorp.zendesk.com/agent/tickets/[0-9]{5}' | grep -Pv '[0-9]{7}' | uniq | fzf --border --inline-info --tac | sed -e 's/.*\/agent\/tickets\///' -e 's/\/.*//')
+  TICKET_NUMBER=$(for SESSION in $(ls -dt "${HOME}"/.config/google-chrome/Default/Sessions/* | head -2); do
+    strings "${SESSION}" | grep -E '^https?://hashicorp.zendesk.com/agent/tickets/[0-9]{5}' | grep -Pv '[0-9]{7}' | uniq | sed -e 's/.*\/agent\/tickets\///' -e 's/\/.*//'
+  done | fzf --border --inline-info --tac)
   test ! -z "${TICKET_NUMBER}" || exit 1
   pprint "Ticket: ${TICKET_NUMBER}"
   create_local_ticket_directory && populate_templates

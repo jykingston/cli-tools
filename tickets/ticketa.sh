@@ -13,7 +13,7 @@ set -o errtrace
 # Catch the error in case mysqldump fails (but gzip succeeds) in `mysqldump |gzip`
 set -o pipefail
 # Turn on traces, useful while debugging but commented out by default
-set -o xtrace
+#set -o xtrace
 
 TICKET_NUMBER="$1"
 TICKET_DIRECTORY="${HOME}/support/tickets"
